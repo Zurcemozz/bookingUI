@@ -6,11 +6,15 @@ import 'react-date-range/dist/theme/default.css' // theme css file
 import { FaBed } from 'react-icons/fa'
 import { FcCalendar, FcSearch } from 'react-icons/fc'
 import { HiUserGroup } from 'react-icons/hi'
+import { useNavigate } from 'react-router-dom'
 import BackgroundIsland from '../assets/island.jpg'
 import ButtonHeader from './ButtonHeader'
 const UnderHeader = () => {
+  const navigate = useNavigate()
   const [openDate, setOpenDate] = useState(false)
   const [openOptions, setOpenOptions] = useState(false)
+
+  const [destination, setdestination] = useState('')
 
   const [date, setDate] = useState([
     {
@@ -38,10 +42,14 @@ const UnderHeader = () => {
     })
   }
 
+  const handleSearch = () => {
+    navigate('/hotels', { state: { destination, date, options } })
+  }
+
   return (
     <div className="w-screen h-80 max-h-7xl drop-shadow-lg">
       <div
-        className="w-full h-full mt-5 bg-no-repeat bg-cover bg-center opacity-100 bg-neutral-800  bg-blend-overlay flex items-center justify-center "
+        className="w-full h-full mt-5 bg-no-repeat bg-cover bg-center opacity-100 bg-neutral-800  bg-blend-overlay flex items-center  justify-center "
         style={{ backgroundImage: `url(${BackgroundIsland})` }}
       >
         <div className="flex items-center justify-evenly p-4 w-3/4 h-16 text-lg border-2 border-white/[.2] bg-white/[.08] rounded-full">
@@ -51,9 +59,10 @@ const UnderHeader = () => {
               type="text"
               placeholder="Location..."
               className="px-3 border-b-2 py-1 text-dark focus:outline-none w-72 bg-transparent cursor-pointer"
+              onChange={(e) => setdestination(e.target.value)}
             />
           </div>
-          <div className="flex gap-3 cursor-pointer text-white items-center relative justify-center">
+          <div className="flex gap-3 cursor-pointer text-white items-center justify-center relative z-20">
             <FcCalendar size={36} className="text-white" />
             <p onClick={() => setOpenDate(!openDate)}>
               {`${format(date[0].startDate, 'MM/dd/yyyy')}`}
@@ -66,6 +75,7 @@ const UnderHeader = () => {
                 onChange={(item) => setDate([item.selection])}
                 moveRangeOnFirstSelection={false}
                 ranges={date}
+                minDate={new Date()}
                 className="absolute top-[50px]"
               />
             )}
@@ -77,7 +87,7 @@ const UnderHeader = () => {
               onClick={() => setOpenOptions(!openOptions)}
             >{`${options.adult} adult • ${options.children} children • ${options.room} room`}</p>
             {openOptions && (
-              <div className="absolute top-[50px] bg-white text-gray-800 rounded-sm px-3 py-4 drop-shadow-2xl">
+              <div className="absolute right-[260px] z-[100] bg-white text-gray-800 rounded-sm px-3 py-4 drop-shadow-2xl">
                 {/* This is person choose */}
                 <ButtonHeader
                   title="Adult"
@@ -104,7 +114,9 @@ const UnderHeader = () => {
           </div>
           <div className="flex gap-1 cursor-pointer bg-blue-200 hover:bg-blue-300 duration-300 rounded-full px-4 py-3 items-center justify-center">
             <FcSearch size={24} className="" />
-            <p className="text-lg font-bold">Search</p>
+            <p className="text-lg font-bold" onClick={handleSearch}>
+              Search
+            </p>
           </div>
         </div>
       </div>
